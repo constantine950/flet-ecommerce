@@ -33,7 +33,7 @@ export default function RootLayout({
           <header>
             <Navigation />
           </header>
-          <main className="pt-16">{children}</main>
+          <main className="pt-24">{children}</main>
         </CartProvider>
       </body>
     </html>
