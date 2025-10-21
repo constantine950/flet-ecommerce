@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { HiSearch, HiShoppingBag } from "react-icons/hi";
+import { HiShoppingBag } from "react-icons/hi";
 import { HiBars3, HiXMark } from "react-icons/hi2";
+import { useCart } from "../_context/CartContext";
 
 type NavLink = {
   label: string;
@@ -20,18 +21,12 @@ const navLinks: NavLink[] = [
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchActive, setSearchActive] = useState(false);
-  const [query, setQuery] = useState("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Searching for:", query);
-  };
+  const { cart } = useCart();
 
   return (
-    <nav className="sticky top-0 z-20 bg-white border-b border-gray-100">
+    <nav className="fixed top-0 left-0 right-0 z-20 bg-white border-b border-gray-100 shadow-sm">
       <div className="flex items-center justify-between px-6 lg:px-16 py-4">
-        {/* Left: Menu Icon (mobile) */}
+        {/* Left: Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="lg:hidden text-gray-700 hover:text-blue-600 transition"
@@ -49,50 +44,20 @@ const Navigation = () => {
           FLET
         </Link>
 
-        {/* Right: Icons / Search Field */}
-        <div className="flex items-center space-x-3 min-w-[80px] justify-end">
-          {!searchActive ? (
-            <>
-              <button
-                aria-label="Search"
-                onClick={() => setSearchActive(true)}
-                className="text-gray-700 hover:text-blue-600 transition"
-              >
-                <HiSearch className="h-6 w-6" />
-              </button>
-              <button
-                aria-label="Shopping bag"
-                className="text-gray-700 hover:text-blue-600 transition"
-              >
-                <HiShoppingBag className="h-6 w-6" />
-              </button>
-            </>
-          ) : (
-            <form
-              onSubmit={handleSearch}
-              className="flex items-center space-x-2"
-            >
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
-                className="w-40 sm:w-60 border border-gray-300 rounded-full px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 transition-all"
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchActive(false);
-                  setQuery("");
-                }}
-                className="text-gray-500 hover:text-blue-600 transition"
-                aria-label="Close search"
-              >
-                <HiXMark className="h-5 w-5" />
-              </button>
-            </form>
-          )}
+        {/* Right: Cart Icon */}
+        <div className="relative">
+          <Link
+            href="/cart"
+            aria-label="Shopping bag"
+            className="text-gray-700 hover:text-blue-600 transition relative"
+          >
+            <HiShoppingBag className="h-6 w-6" />
+            {cart.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-blue-600 text-white text-xs font-semibold rounded-full px-1.5 py-0.5">
+                {cart.length}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
 

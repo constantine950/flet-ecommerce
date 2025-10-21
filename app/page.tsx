@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type Product = {
   id: number;
@@ -52,28 +53,24 @@ export default async function Home() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <div
+            <Link
               key={product.id}
-              className="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-4"
+              href={`/products/${product.id}`}
+              className="block group bg-gray-50 rounded-lg hover:shadow-md transition p-4"
             >
-              {/* Image */}
-              <div className="relative w-full h-60 bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center">
+              <div className="relative w-full h-56">
                 <Image
                   src={product.image}
                   alt={product.title}
                   fill
-                  className="object-contain group-hover:scale-105 transition duration-300 p-4"
+                  className="object-contain group-hover:scale-105 transition-transform"
                 />
               </div>
-
-              {/* Info */}
-              <div className="mt-4 space-y-1">
-                <h3 className="text-sm font-medium text-gray-800 line-clamp-2">
-                  {product.title}
-                </h3>
-                <p className="text-blue-600 font-semibold">${product.price}</p>
-              </div>
-            </div>
+              <h3 className="text-lg font-semibold mt-3 text-gray-800">
+                {product.title}
+              </h3>
+              <p className="text-blue-600 font-medium">${product.price}</p>
+            </Link>
           ))}
         </div>
       </section>
