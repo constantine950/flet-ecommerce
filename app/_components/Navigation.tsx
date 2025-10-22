@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { HiShoppingBag } from "react-icons/hi";
 import { HiBars3, HiXMark } from "react-icons/hi2";
 import { useCart } from "../_context/CartContext";
+import { usePathname } from "next/navigation";
 
 type NavLink = {
   label: string;
@@ -22,6 +23,27 @@ const navLinks: NavLink[] = [
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cart } = useCart();
+  const path = usePathname();
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  // ✅ Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-20 bg-white border-b border-gray-100 shadow-sm">
@@ -63,13 +85,18 @@ const Navigation = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden px-6 pb-4 space-y-2 bg-white shadow-sm">
+        <div
+          ref={menuRef}
+          className="lg:hidden px-6 pb-4 space-y-2 bg-white shadow-sm"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:text-blue-600 transition font-medium"
+              className={`${
+                path === link.href ? "text-blue-600" : "text-gray-700"
+              } block hover:text-blue-600 transition font-medium`}
             >
               {link.label}
             </Link>
@@ -83,7 +110,9 @@ const Navigation = () => {
           <Link
             key={link.href}
             href={link.href}
-            className="text-gray-700 hover:text-blue-600 transition font-medium"
+            className={`${
+              path === link.href ? "text-blue-600" : "text-gray-700"
+            } hover:text-blue-600 transition font-medium`}
           >
             {link.label}
           </Link>
