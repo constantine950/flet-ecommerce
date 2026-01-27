@@ -6,9 +6,17 @@ export const metadata = {
 };
 
 export default async function MenPage() {
+  const category = "men's clothing";
+
   const res = await fetch(
-    "https://fakestoreapi.com/products/category/men's clothing"
+    `https://fakestoreapi.com/products/category/${encodeURIComponent(category)}`,
+    { cache: "no-store" },
   );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch men's products");
+  }
+
   const products: Product[] = await res.json();
 
   return (
